@@ -5,7 +5,6 @@ import TaskList from './components/TaskList';
 import SessionHistory from './components/SessionHistory';
 import { Task, TimerMode, SessionLog, Priority } from './types';
 
-// Quick helper to safely grab data from local storage
 const getStorageItem = (key: string, fallback: any) => {
   try {
     const saved = localStorage.getItem(key);
@@ -19,7 +18,6 @@ export default function App() {
   const [tasks, setTasks] = useState<Task[]>(() => getStorageItem('focus_tasks', []));
   const [sessionLogs, setSessionLogs] = useState<SessionLog[]>(() => getStorageItem('focus_logs', []));
   
-  // Let TypeScript infer basic primitive types naturally
   const [distractionsCount, setDistractionsCount] = useState(0);
   const [isGuardArmed, setIsGuardArmed] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
