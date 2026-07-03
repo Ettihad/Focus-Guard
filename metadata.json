@@ -1,0 +1,6 @@
+{
+  "name": "Focus Guard",
+  "description": "An elegant minimal Pomodoro and task assistant that uses camera-based AI detection to trigger an alarm if a phone distraction is spotted.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
