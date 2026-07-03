@@ -1,4 +1,5 @@
 export type Priority = 'low' | 'medium' | 'high';
+export type TimerMode = 'work' | 'break';
 
 export interface Task {
   id: string;
@@ -7,8 +8,6 @@ export interface Task {
   createdAt: number;
   priority: Priority;
 }
-
-export type TimerMode = 'work' | 'break';
 
 export interface SessionLog {
   id: string;
