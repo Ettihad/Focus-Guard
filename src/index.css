@@ -3,6 +3,6 @@
 @import url('https://googleapis.com');
 
 @theme {
-  --font-sans: "Inter", var(--font-sans);
-  --font-mono: "JetBrains Mono", var(--font-mono);
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
 }
