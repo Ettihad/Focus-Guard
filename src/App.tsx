@@ -5,22 +5,28 @@ import TaskList from './components/TaskList';
 import SessionHistory from './components/SessionHistory';
 import { Task, TimerMode, SessionLog, Priority } from './types';
 
-const getStorageItem = (key: string, fallback: any) => {
-  try {
-    const saved = localStorage.getItem(key);
-    return saved ? JSON.parse(saved) : fallback;
-  } catch {
-    return fallback;
-  }
-};
-
 export default function App() {
-  const [tasks, setTasks] = useState<Task[]>(() => getStorageItem('focus_tasks', []));
-  const [sessionLogs, setSessionLogs] = useState<SessionLog[]>(() => getStorageItem('focus_logs', []));
-  
-  const [distractionsCount, setDistractionsCount] = useState(0);
-  const [isGuardArmed, setIsGuardArmed] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    try {
+      const saved = localStorage.getItem('focus_tasks');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [sessionLogs, setSessionLogs] = useState<SessionLog[]>(() => {
+    try {
+      const saved = localStorage.getItem('focus_logs');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  const [distractionsCount, setDistractionsCount] = useState<number>(0);
+  const [isGuardArmed, setIsGuardArmed] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(false);
 
   useEffect(() => {
     localStorage.setItem('focus_tasks', JSON.stringify(tasks));
@@ -43,7 +49,7 @@ export default function App() {
 
   const handleToggleTask = (id: string) => {
     setTasks((prev) =>
-      prev.map((t) => t.id === id ? { ...t, completed: !t.completed } : t)
+      prev.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))
     );
   };
 
@@ -55,7 +61,11 @@ export default function App() {
     setDistractionsCount((prev) => prev + 1);
   };
 
-  const handleTimerComplete = (mode: TimerMode, durationMinutes: number, completed: boolean) => {
+  const handleTimerComplete = (
+    mode: TimerMode,
+    durationMinutes: number,
+    completed: boolean
+  ) => {
     if (durationMinutes <= 0) return;
 
     const log: SessionLog = {
@@ -81,30 +91,41 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-100 flex flex-col font-sans selection:bg-zinc-800 selection:text-zinc-200">
+      {/* Header */}
       <header className="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-4 py-3.5 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-            <h1 className="text-sm font-semibold tracking-tight">Focus Mode</h1>
+            <h1 className="text-sm font-semibold text-zinc-100 tracking-tight">
+              Focus Mode
+            </h1>
           </div>
 
           <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
-            <span className={`w-2 h-2 rounded-full ${isGuardArmed ? 'bg-emerald-400' : 'bg-zinc-600'}`} />
+            <span
+              className={`w-2 h-2 rounded-full ${
+                isGuardArmed ? 'bg-emerald-400' : 'bg-zinc-600'
+              }`}
+            />
             <span>{isGuardArmed ? 'Guard Armed' : 'Standby'}</span>
           </div>
         </div>
       </header>
 
+      {/* Main Grid */}
       <main className="flex-grow max-w-6xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        {/* Column 1: Pomodoro Timer */}
         <div className="flex flex-col gap-6">
           <PomodoroTimer
             distractionsCount={distractionsCount}
             onTimerComplete={handleTimerComplete}
             isGuardArmed={isGuardArmed}
           />
+
           <SessionHistory logs={sessionLogs} onClear={handleClearLogs} />
         </div>
 
+        {/* Column 2: Camera Detector */}
         <div className="flex flex-col gap-6">
           <CameraDetector
             isArmed={isGuardArmed}
@@ -115,6 +136,7 @@ export default function App() {
           />
         </div>
 
+        {/* Column 3: Task List */}
         <div className="flex flex-col gap-6 h-full">
           <TaskList
             tasks={tasks}
@@ -125,6 +147,7 @@ export default function App() {
         </div>
       </main>
 
+      {/* Footer */}
       <footer className="border-t border-zinc-900 py-4 text-center text-xs text-zinc-600">
         Focus Mode &bull; Local machine vision detection
       </footer>
