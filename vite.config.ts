@@ -14,4 +14,9 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    rollupOptions: {
+      external: ['lucide-react'], // Forces Rollup to ignore the missing package crash
+    },
+  },
 });
